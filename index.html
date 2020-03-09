@@ -47,6 +47,7 @@
     <script>
       setInterval(() => {
         var xhttp = new XMLHttpRequest();
+        xhttp.open("GET", "/temparature", true);
         xhttp.setRequestHeader("Content-Type", "application/json");
         xhttp.onreadystatechange = function() {
           if (this.readyState == 4 && this.status == 200) {
@@ -54,7 +55,6 @@
             document.getElementById("temparature").innerHTML = json.temparature;
           }
         };
-        xhttp.open("GET", "filename", true);
         xhttp.send();
       }, 2000);
     </script>

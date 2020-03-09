@@ -22,6 +22,7 @@
 		change this internal resolution to whatever the source provides. The size the
 		canvas is displayed on the website is dictated by the CSS style.
 	-->
+    <div id="temparature">Loading temparature...</div>
     <canvas id="videoCanvas" width="${WIDTH}" height="${HEIGHT}">
       <p>
         Please use a browser that supports the Canvas Element, like
@@ -42,6 +43,20 @@
       // Setup the WebSocket connection and start the player
       var client = new WebSocket("ws://" + window.location.hostname + "/video");
       var player = new jsmpeg(client, { canvas: canvas });
+    </script>
+    <script>
+      setInterval(() => {
+        var xhttp = new XMLHttpRequest();
+        xhttp.setRequestHeader("Content-Type", "application/json");
+        xhttp.onreadystatechange = function() {
+          if (this.readyState == 4 && this.status == 200) {
+            var json = JSON.parse(xhr.responseText);
+            document.getElementById("temparature").innerHTML = json.temparature;
+          }
+        };
+        xhttp.open("GET", "filename", true);
+        xhttp.send();
+      }, 2000);
     </script>
   </body>
 </html>

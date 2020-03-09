@@ -51,12 +51,15 @@ class StreamingHttpHandler(BaseHTTPRequestHandler):
         elif self.path == '/jsmpg.js':
             content_type = 'application/javascript'
             content = self.server.jsmpg_content
+        elif self.path == '/temparature':
+            content_type = 'application/json'
+            content = {'temparature': get_temp()}
         elif self.path == '/index.html':
             content_type = 'text/html; charset=utf-8'
+            temparature = get_temp()
             tpl = Template(self.server.index_template)
-            content = tpl.safe_substitute(dict(
-                WS_PORT=WS_PORT, WIDTH=WIDTH, HEIGHT=HEIGHT, COLOR=COLOR,
-                BGCOLOR=BGCOLOR))
+            content = tpl.safe_substitute(dict(WIDTH=WIDTH, HEIGHT=HEIGHT, COLOR=COLOR,
+                BGCOLOR=BGCOLOR, TEMPARATURE=temparature))
         else:
             self.send_error(404, 'File not found')
             return
@@ -68,6 +71,18 @@ class StreamingHttpHandler(BaseHTTPRequestHandler):
         self.end_headers()
         if self.command == 'GET':
             self.wfile.write(content)
+
+
+def get_temp():
+	temp_sensor = '/sys/bus/w1/devices/28-011452c4fbaa/w1_slave'
+	with open(temp_sensor, 'r') as file:
+		lines = file.readlines()
+		equals_pos = lines[1].find('t=')
+		if equals_pos != -1:
+			temp_string = lines[1][equals_pos + 2:]
+			temp_c = float(temp_string) / 1000.0
+			return temp_c
+		return 100.0
 
 
 class StreamingHttpServer(HTTPServer):

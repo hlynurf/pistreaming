@@ -207,7 +207,7 @@ def main():
         websocket_thread = Thread(target=websocket_server.serve_forever)
         print('Initializing HTTP server on port %d' % HTTP_PORT)
         http_server = StreamingHttpServer()
-        http_server.set_auth('jon', '123')
+        http_server.set_auth('jon', os.environ['AUTH_PASS'])
         http_thread = Thread(target=http_server.serve_forever)
         print('Initializing broadcast thread')
         output = BroadcastOutput(camera)

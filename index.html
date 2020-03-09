@@ -51,7 +51,7 @@
         xhttp.setRequestHeader("Content-Type", "application/json");
         xhttp.onreadystatechange = function() {
           if (this.readyState == 4 && this.status == 200) {
-            var json = JSON.parse(xhr.responseText);
+            var json = JSON.parse(xhttp.responseText);
             document.getElementById("temparature").innerHTML = json.temparature;
           }
         };

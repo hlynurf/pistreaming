@@ -15,6 +15,11 @@
       	width: ${WIDTH}px;
       	height: ${HEIGHT}px;
       }
+      #temparature {
+        color: white;
+        font-size: 24px;
+        font-family: monospace;
+      }
     </style>
   </head>
   <body>
@@ -52,7 +57,8 @@
         xhttp.onreadystatechange = function() {
           if (this.readyState == 4 && this.status == 200) {
             var json = JSON.parse(xhttp.responseText);
-            document.getElementById("temparature").innerHTML = json.temparature;
+            document.getElementById("temparature").innerHTML =
+              json.temparature + " °C";
           }
         };
         xhttp.send();

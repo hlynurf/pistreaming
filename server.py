@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 
+import base64
 import sys
 import io
 import json
@@ -43,7 +44,42 @@ class StreamingHttpHandler(BaseHTTPRequestHandler):
     def do_HEAD(self):
         self.do_GET()
 
+    def do_AUTHHEAD(self):
+        self.send_response(401)
+        self.send_header(
+            'WWW-Authenticate', 'Basic realm="Access to horses"')
+        self.send_header('Content-type', 'application/json')
+        self.end_headers()
+
+    def auth(self):
+        key = self.server.get_auth_key()
+        if self.headers.get('Authorization') == None:
+            self.do_AUTHHEAD()
+
+            response = {
+                'success': False,
+                'error': 'No auth header received'
+            }
+
+            self.wfile.write(bytes(json.dumps(response), 'utf-8'))
+        elif self.headers.get('Authorization') == 'Basic ' + str(key):
+            return True
+        else:
+            self.do_AUTHHEAD()
+
+            response = {
+                'success': False,
+                'error': 'Invalid credentials'
+            }
+
+            self.wfile.write(bytes(json.dumps(response), 'utf-8'))
+        
+        return False
+
     def do_GET(self):
+        if not self.auth():
+            return
+
         if self.path == '/':
             self.send_response(301)
             self.send_header('Location', '/index.html')
@@ -94,6 +130,13 @@ class StreamingHttpServer(HTTPServer):
             self.index_template = f.read()
         with io.open('jsmpg.js', 'r') as f:
             self.jsmpg_content = f.read()
+
+    def set_auth(self, username, password):
+        self.key = base64.b64encode(
+            bytes('%s:%s' % (username, password), 'utf-8')).decode('ascii')
+
+    def get_auth_key(self):
+        return self.key
 
 
 class StreamingWebSocket(WebSocket):
@@ -164,6 +207,7 @@ def main():
         websocket_thread = Thread(target=websocket_server.serve_forever)
         print('Initializing HTTP server on port %d' % HTTP_PORT)
         http_server = StreamingHttpServer()
+        http_server.set_auth('jon', '123')
         http_thread = Thread(target=http_server.serve_forever)
         print('Initializing broadcast thread')
         output = BroadcastOutput(camera)

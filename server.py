@@ -2,6 +2,7 @@
 
 import sys
 import io
+import json
 import os
 import shutil
 from subprocess import Popen, PIPE
@@ -53,7 +54,7 @@ class StreamingHttpHandler(BaseHTTPRequestHandler):
             content = self.server.jsmpg_content
         elif self.path == '/temparature':
             content_type = 'application/json'
-            content = {'temparature': get_temp()}
+            content = json.dumps({'temparature': get_temp()})
         elif self.path == '/index.html':
             content_type = 'text/html; charset=utf-8'
             temparature = get_temp()

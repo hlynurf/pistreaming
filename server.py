@@ -106,19 +106,21 @@ class StreamingHttpHandler(BaseHTTPRequestHandler):
             if interval_raw is None or not interval_raw.isdigit():
                 self.send_error(400, 'Interval incorrect')
                 return
+
             interval = int(interval_raw)
             rows = get_temp_history(interval)
 
             content_type = 'text/html; charset=utf-8'
             temparature = get_temp()
             tpl = Template(self.server.history_template)
+            selected_str = 'selected="selected"'
             content = tpl.safe_substitute(dict(
                 data=rows,
-                is24=(interval == 24),
-                is6=(interval == 6),
-                is12=(interval == 12),
-                is168=(interval == 168),
-                is720=(interval == 72),
+                is24=selected_str if interval == 24 else '',
+                is6=selected_str if interval == 6 else '',
+                is12=selected_str if interval == 12 else '',
+                is168=selected_str if interval == 168 else '',
+                is720=selected_str if interval == 720 else '',
             ))
         elif self.path == '/index.html':
             content_type = 'text/html; charset=utf-8'

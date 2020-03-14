@@ -145,8 +145,7 @@ def write_temp_to_db():
     conn = sqlite3.connect(TEMPDB_FILE)
     c = conn.cursor()
     temp = get_temp()
-    date_back = datetime.datetime.now() - datetime.timedelta(hours=interval)
-    c.execute('INSERT INTO temps VALUES (datetime("now"), ?)', (date_back,))
+    c.execute('INSERT INTO temps VALUES (datetime("now"), ?)', (temp,))
     conn.close()
     Timer(10, write_temp_to_db).start()
 
@@ -154,8 +153,8 @@ def get_temp_history(interval: Optional[int] = 24):
     ensure_db_exists()
     conn = sqlite3.connect(TEMPDB_FILE)
     c = conn.cursor()
-    interval_str = f'-{interval} hours'
-    c.execute('SELECT timestamp, temp FROM temps WHERE timestamp > datetime("now",?)', (interval_str,))
+    date_back = datetime.datetime.now() - datetime.timedelta(hours=interval)
+    c.execute('SELECT timestamp, temp FROM temps WHERE timestamp > datetime("now",?)', (date_back,))
     rows = c.fetchall()
     return rows
 

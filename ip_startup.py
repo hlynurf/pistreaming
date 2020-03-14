@@ -16,7 +16,7 @@ fromEmailPassword = os.environ['GMAIL_PASS']
 toEmail = 'jon.hesthus@gmail.com'
 
 
-def sendEmail(image):
+def sendEmail():
 	msgRoot = MIMEMultipart('related')
 	msgRoot['Subject'] = 'Latest IP info'
 	msgRoot['From'] = fromEmail

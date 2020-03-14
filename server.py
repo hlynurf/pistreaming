@@ -144,6 +144,7 @@ def write_temp_to_db():
     conn = sqlite3.connect(TEMPDB_FILE)
     c = conn.cursor()
     temp = get_temp()
+    print('taking measurement')
     c.execute('INSERT INTO temps VALUES (datetime("now"), ?)', (temp,))
     conn.close()
     Timer(10, write_temp_to_db).start()

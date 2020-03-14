@@ -114,14 +114,16 @@ class StreamingHttpHandler(BaseHTTPRequestHandler):
             temparature = get_temp()
             tpl = Template(self.server.history_template)
             selected_str = 'selected="selected"'
-            content = tpl.safe_substitute(dict(
+            html_data = dict(
                 data=json.dumps(rows),
                 is24=selected_str if interval == 24 else '',
                 is6=selected_str if interval == 6 else '',
                 is12=selected_str if interval == 12 else '',
                 is168=selected_str if interval == 168 else '',
                 is720=selected_str if interval == 720 else '',
-            ))
+            )
+            print(html_data)
+            content = tpl.safe_substitute(html_data)
         elif self.path == '/index.html':
             content_type = 'text/html; charset=utf-8'
             temparature = get_temp()

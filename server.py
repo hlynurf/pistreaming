@@ -137,6 +137,7 @@ def ensure_db_exists():
     c = conn.cursor()
     c.execute('CREATE TABLE temps (timestamp DATETIME, temp NUMERIC)')
     conn.close()
+    print('DB created')
 
 def write_temp_to_db():
     ensure_db_exists()
@@ -151,7 +152,8 @@ def get_temp_history(interval: Optional[int] = 24):
     ensure_db_exists()
     conn = sqlite3.connect(TEMPDB_FILE)
     c = conn.cursor()
-    c.execute('SELECT timestamp, temp FROM temps WHERE timestamp > datetime("now","-? hours")', (interval,))
+    interval_str = f'-{interval} hours'
+    c.execute('SELECT timestamp, temp FROM temps WHERE timestamp > datetime("now",?)', (interval_str,))
     rows = c.fetchall()
     return rows
 

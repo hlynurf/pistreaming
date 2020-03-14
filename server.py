@@ -16,7 +16,7 @@ from threading import Thread, Timer
 from time import sleep, time
 from http.server import HTTPServer, BaseHTTPRequestHandler
 from wsgiref.simple_server import make_server
-from urlparse import urlparse
+import urllib.parse
 
 import picamera
 from ws4py.websocket import WebSocket
@@ -96,7 +96,7 @@ class StreamingHttpHandler(BaseHTTPRequestHandler):
             content_type = 'application/json'
             content = json.dumps({'temparature': get_temp()})
         elif self.path == '/history':
-            query = urlparse(self.path).query
+            query = urllib.parse.urlparse(self.path).query
             query_components = dict(qc.split("=") for qc in query.split("&"))
             interval_raw = query_components.get('interval', None)
             if interval_raw is None or not interval_raw.isdigit(interval_raw):

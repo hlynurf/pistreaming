@@ -6,10 +6,12 @@ import io
 import json
 import os
 import shutil
+import sqlite3
+
 from subprocess import Popen, PIPE
 from string import Template
 from struct import Struct
-from threading import Thread
+from threading import Thread, Timer
 from time import sleep, time
 from http.server import HTTPServer, BaseHTTPRequestHandler
 from wsgiref.simple_server import make_server
@@ -36,7 +38,7 @@ JSMPEG_MAGIC = b'jsmp'
 JSMPEG_HEADER = Struct('>4sHH')
 VFLIP = False
 HFLIP = False
-
+TEMPDB_FILE = 'tempfile.db'
 ###########################################
 
 
@@ -91,6 +93,9 @@ class StreamingHttpHandler(BaseHTTPRequestHandler):
         elif self.path == '/temparature':
             content_type = 'application/json'
             content = json.dumps({'temparature': get_temp()})
+        elif self.path == '/history':
+            content_type = 'application/json'
+            content = json.dumps({'history': get_temp_history()})
         elif self.path == '/index.html':
             content_type = 'text/html; charset=utf-8'
             temparature = get_temp()
@@ -120,6 +125,33 @@ def get_temp():
 			temp_c = float(temp_string) / 1000.0
 			return temp_c
 		return 100.0
+
+def ensure_db_exists():
+    if os.path.exists(TEMPDB_FILE):
+        return
+    
+    print('Creating DB...')
+    conn = sqlite3.connect(TEMPDB_FILE)
+    c = conn.cursor()
+    c.execute('CREATE TABLE temps (timestamp DATETIME, temp NUMERIC)')
+    conn.close()
+
+def write_temp_to_db():
+    ensure_db_exists()
+    conn = sqlite3.connect(TEMPDB_FILE)
+    c = conn.cursor()
+    temp = get_temp()
+    c.execute('INSERT INTO temps VALUES (datetime("now"), ?)', (temp,))
+    conn.close()
+    Timer(10, write_temp_to_db).start()
+
+def get_temp_history(interval: Optional[int] = 24):
+    ensure_db_exists()
+    conn = sqlite3.connect(TEMPDB_FILE)
+    c = conn.cursor()
+    c.execute('SELECT timestamp, temp FROM temps WHERE timestamp > datetime("now","-? hours")', (interval,))
+    rows = c.fetchall()
+    return rows
 
 
 class StreamingHttpServer(HTTPServer):
@@ -221,6 +253,7 @@ def main():
             http_thread.start()
             print('Starting broadcast thread')
             broadcast_thread.start()
+            write_temp_to_db()
             while True:
                 camera.wait_recording(1)
         except KeyboardInterrupt:

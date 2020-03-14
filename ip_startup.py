@@ -25,7 +25,7 @@ def sendEmail(image):
 
 	msgAlternative = MIMEMultipart('alternative')
 	msgRoot.attach(msgAlternative)
-    ifconfig = subprocess.check_output('ifconfig', shell=True)
+	ifconfig = subprocess.check_output('ifconfig', shell=True)
 
 	msgText = MIMEText(ifconfig)
 	msgAlternative.attach(msgText)

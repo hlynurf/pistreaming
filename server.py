@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 
 import base64
+import datetime
 import sys
 import io
 import json
@@ -144,8 +145,8 @@ def write_temp_to_db():
     conn = sqlite3.connect(TEMPDB_FILE)
     c = conn.cursor()
     temp = get_temp()
-    print('taking measurement')
-    c.execute('INSERT INTO temps VALUES (datetime("now"), ?)', (temp,))
+    date_back = datetime.datetime.now() - datetime.timedelta(hours=interval)
+    c.execute('INSERT INTO temps VALUES (datetime("now"), ?)', (date_back,))
     conn.close()
     Timer(10, write_temp_to_db).start()
 

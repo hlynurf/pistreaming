@@ -199,7 +199,7 @@ class StreamingHttpServer(HTTPServer):
         with io.open('index.html', 'r') as f:
             self.index_template = f.read()
         with io.open('history.html', 'r') as f:
-            self.history_template = f.read
+            self.history_template = f.read()
         with io.open('jsmpg.js', 'r') as f:
             self.jsmpg_content = f.read()
 

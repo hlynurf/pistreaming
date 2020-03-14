@@ -95,7 +95,7 @@ class StreamingHttpHandler(BaseHTTPRequestHandler):
         elif self.path == '/temparature':
             content_type = 'application/json'
             content = json.dumps({'temparature': get_temp()})
-        elif self.path == '/history':
+        elif self.path.startswith('/history'):
             query = urllib.parse.urlparse(self.path).query
             if not query:
                 interval_raw = '6'

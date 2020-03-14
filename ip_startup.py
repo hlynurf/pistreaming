@@ -27,7 +27,7 @@ def sendEmail():
 	msgRoot.attach(msgAlternative)
 	ifconfig = subprocess.check_output('ifconfig', shell=True)
 
-	msgText = MIMEText(ifconfig)
+	msgText = MIMEText(ifconfig.decode('latin-1'))
 	msgAlternative.attach(msgText)
 
 	smtp = smtplib.SMTP('smtp.gmail.com', 587)

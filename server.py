@@ -9,8 +9,6 @@ import os
 import shutil
 import sqlite3
 
-from typing import Optional
-
 from subprocess import Popen, PIPE
 from string import Template
 from struct import Struct
@@ -149,12 +147,16 @@ def write_temp_to_db():
     conn.close()
     Timer(10, write_temp_to_db).start()
 
-def get_temp_history(interval: Optional[int] = 24):
+def get_temp_history(interval: int = 24):
+    accepted_intervals = [6, 12, 24, 168, 720]
+    if interval not in accepted_intervals
+        return []
+
     ensure_db_exists()
     conn = sqlite3.connect(TEMPDB_FILE)
     c = conn.cursor()
     date_back = datetime.datetime.now() - datetime.timedelta(hours=interval)
-    c.execute('SELECT timestamp, temp FROM temps WHERE timestamp > ?', (date_back,))
+    c.execute(f'SELECT timestamp, temp FROM temps WHERE timestamp >= datetime("now", "-{interval} hours"')
     rows = c.fetchall()
     return rows
 

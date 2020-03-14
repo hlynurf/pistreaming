@@ -103,7 +103,7 @@ class StreamingHttpHandler(BaseHTTPRequestHandler):
                 query_components = dict(qc.split("=") for qc in query.split("&"))
                 interval_raw = query_components.get('interval', None)
 
-            if interval_raw is None or not interval_raw.isdigit(interval_raw):
+            if interval_raw is None or not interval_raw.isdigit():
                 self.send_error(400, 'Interval incorrect')
                 return
             interval = int(interval_raw)

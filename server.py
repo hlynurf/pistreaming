@@ -115,7 +115,7 @@ class StreamingHttpHandler(BaseHTTPRequestHandler):
             tpl = Template(self.server.history_template)
             selected_str = 'selected="selected"'
             content = tpl.safe_substitute(dict(
-                data=rows,
+                data=json.dumps(rows),
                 is24=selected_str if interval == 24 else '',
                 is6=selected_str if interval == 6 else '',
                 is12=selected_str if interval == 12 else '',

@@ -144,6 +144,7 @@ def write_temp_to_db():
     c = conn.cursor()
     temp = get_temp()
     c.execute('INSERT INTO temps VALUES (datetime("now"), ?)', (temp,))
+    conn.commit()
     conn.close()
     Timer(10, write_temp_to_db).start()
 

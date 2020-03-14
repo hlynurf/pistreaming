@@ -28,7 +28,7 @@
 		change this internal resolution to whatever the source provides. The size the
 		canvas is displayed on the website is dictated by the CSS style.
 	-->
-    <div id="temparature">Loading temparature...</div>
+    <div id="temparature">Hleð hitastigi...</div>
     <canvas id="videoCanvas" width="${WIDTH}" height="${HEIGHT}">
       <p>
         Please use a browser that supports the Canvas Element, like
@@ -38,13 +38,14 @@
         10
       </p>
     </canvas>
+    <a href="/history">Sjá hitastigssögu</a>
     <script type="text/javascript" src="jsmpg.js"></script>
     <script type="text/javascript">
       // Show loading notice
       var canvas = document.getElementById("videoCanvas");
       var ctx = canvas.getContext("2d");
       ctx.fillStyle = "${COLOR}";
-      ctx.fillText("Loading...", canvas.width / 2 - 30, canvas.height / 3);
+      ctx.fillText("Hleð...", canvas.width / 2 - 30, canvas.height / 3);
 
       // Setup the WebSocket connection and start the player
       var client = new WebSocket("ws://" + window.location.hostname + "/video");

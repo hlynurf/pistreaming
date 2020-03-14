@@ -77,7 +77,7 @@ class StreamingHttpHandler(BaseHTTPRequestHandler):
             }
 
             self.wfile.write(bytes(json.dumps(response), 'utf-8'))
-        
+
         return False
 
     def do_GET(self):
@@ -122,7 +122,6 @@ class StreamingHttpHandler(BaseHTTPRequestHandler):
                 is168=selected_str if interval == 168 else '',
                 is720=selected_str if interval == 720 else '',
             )
-            print(html_data)
             content = tpl.safe_substitute(html_data)
         elif self.path == '/index.html':
             content_type = 'text/html; charset=utf-8'

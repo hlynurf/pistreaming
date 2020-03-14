@@ -97,8 +97,12 @@ class StreamingHttpHandler(BaseHTTPRequestHandler):
             content = json.dumps({'temparature': get_temp()})
         elif self.path == '/history':
             query = urllib.parse.urlparse(self.path).query
-            query_components = dict(qc.split("=") for qc in query.split("&"))
-            interval_raw = query_components.get('interval', None)
+            if not query:
+                interval_raw = '6'
+            else:
+                query_components = dict(qc.split("=") for qc in query.split("&"))
+                interval_raw = query_components.get('interval', None)
+
             if interval_raw is None or not interval_raw.isdigit(interval_raw):
                 self.send_error(400, 'Interval incorrect')
                 return

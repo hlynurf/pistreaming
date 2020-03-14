@@ -98,7 +98,7 @@ class StreamingHttpHandler(BaseHTTPRequestHandler):
         elif self.path == '/history':
             query = urlparse(self.path).query
             query_components = dict(qc.split("=") for qc in query.split("&"))
-            interval_raw = query_components.get('interval',_raw None)
+            interval_raw = query_components.get('interval', None)
             if interval_raw is None or not interval_raw.isdigit(interval_raw):
                 self.send_error(400, 'Interval incorrect')
                 return

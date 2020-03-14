@@ -154,7 +154,7 @@ def get_temp_history(interval: Optional[int] = 24):
     conn = sqlite3.connect(TEMPDB_FILE)
     c = conn.cursor()
     date_back = datetime.datetime.now() - datetime.timedelta(hours=interval)
-    c.execute('SELECT timestamp, temp FROM temps WHERE timestamp > datetime("now",?)', (date_back,))
+    c.execute('SELECT timestamp, temp FROM temps WHERE timestamp > ?', (date_back,))
     rows = c.fetchall()
     return rows
 

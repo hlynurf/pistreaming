@@ -149,7 +149,7 @@ def write_temp_to_db():
 
 def get_temp_history(interval: int = 24):
     accepted_intervals = [6, 12, 24, 168, 720]
-    if interval not in accepted_intervals
+    if interval not in accepted_intervals:
         return []
 
     ensure_db_exists()

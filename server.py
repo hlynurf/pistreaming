@@ -16,6 +16,7 @@ from threading import Thread, Timer
 from time import sleep, time
 from http.server import HTTPServer, BaseHTTPRequestHandler
 from wsgiref.simple_server import make_server
+from urlparse import urlparse
 
 import picamera
 from ws4py.websocket import WebSocket
@@ -95,8 +96,26 @@ class StreamingHttpHandler(BaseHTTPRequestHandler):
             content_type = 'application/json'
             content = json.dumps({'temparature': get_temp()})
         elif self.path == '/history':
-            content_type = 'application/json'
-            content = json.dumps({'history': get_temp_history()})
+            query = urlparse(self.path).query
+            query_components = dict(qc.split("=") for qc in query.split("&"))
+            interval_raw = query_components.get('interval',_raw None)
+            if interval_raw is None or not interval_raw.isdigit(interval_raw):
+                self.send_error(400, 'Interval incorrect')
+                return
+            interval = int(interval_raw)
+            rows = get_temp_history(interval)
+
+            content_type = 'text/html; charset=utf-8'
+            temparature = get_temp()
+            tpl = Template(self.server.history_template)
+            content = tpl.safe_substitute(dict(
+                data=rows,
+                is24=(interval == 24),
+                is6=(interval == 6),
+                is12=(interval == 12),
+                is168=(interval == 168),
+                is720=(interval == 72),
+            ))
         elif self.path == '/index.html':
             content_type = 'text/html; charset=utf-8'
             temparature = get_temp()
@@ -127,6 +146,7 @@ def get_temp():
 			return temp_c
 		return 100.0
 
+
 def ensure_db_exists():
     if os.path.exists(TEMPDB_FILE):
         return
@@ -138,6 +158,7 @@ def ensure_db_exists():
     conn.close()
     print('DB created')
 
+
 def write_temp_to_db():
     ensure_db_exists()
     conn = sqlite3.connect(TEMPDB_FILE)
@@ -146,7 +167,8 @@ def write_temp_to_db():
     c.execute('INSERT INTO temps VALUES (datetime("now"), ?)', (temp,))
     conn.commit()
     conn.close()
-    Timer(10, write_temp_to_db).start()
+    Timer(30, write_temp_to_db).start()
+
 
 def get_temp_history(interval: int = 24):
     accepted_intervals = [6, 12, 24, 168, 720]
@@ -168,6 +190,8 @@ class StreamingHttpServer(HTTPServer):
                 ('', HTTP_PORT), StreamingHttpHandler)
         with io.open('index.html', 'r') as f:
             self.index_template = f.read()
+        with io.open('history.html', 'r') as f:
+            self.history_template = f.read
         with io.open('jsmpg.js', 'r') as f:
             self.jsmpg_content = f.read()
 

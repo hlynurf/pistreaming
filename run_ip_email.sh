@@ -2,7 +2,7 @@
 
 HOME=/home/pi
 VENVDIR=$HOME/venv
-BINDIR=$HOME/pistreaming
+BINDIR=$HOME/code/pistreaming
 
 cd $BINDIR
 source $VENVDIR/bin/activate

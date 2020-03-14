@@ -8,6 +8,9 @@
       	background: ${BGCOLOR};
       	text-align: center;
       	margin-top: 30px;
+        font-size: 24px;
+        font-family: monospace;
+        color: white;
       }
       #videoCanvas {
       	/* Always stretch the canvas to 640x480, regardless of its
@@ -16,10 +19,11 @@
       	height: ${HEIGHT}px;
       }
       #temparature {
-        color: white;
-        font-size: 24px;
-        font-family: monospace;
         margin-bottom: 20px;
+      }
+      #link_to_history {
+        display: block;
+        color: white;
       }
     </style>
   </head>
@@ -38,7 +42,7 @@
         10
       </p>
     </canvas>
-    <a href="/history">Sjá hitastigssögu</a>
+    <a id="link_to_history" href="/history">Sjá hitastigssögu</a>
     <script type="text/javascript" src="jsmpg.js"></script>
     <script type="text/javascript">
       // Show loading notice

@@ -35,3 +35,6 @@ def sendEmail(image):
 	smtp.login(fromEmail, fromEmailPassword)
 	smtp.sendmail(fromEmail, toEmail, msgRoot.as_string())
 	smtp.quit()
+
+
+sendEmail()

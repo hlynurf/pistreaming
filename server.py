@@ -8,6 +8,8 @@ import os
 import shutil
 import sqlite3
 
+from typing import Optional
+
 from subprocess import Popen, PIPE
 from string import Template
 from struct import Struct

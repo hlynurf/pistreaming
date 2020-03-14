@@ -9,7 +9,7 @@
       google.load("visualization", "1", {packages:["corechart"]});
       google.setOnLoadCallback(drawChart);
       function drawChart() {
-        var history = JSON.parse(${DATA})
+        var history = JSON.parse(${data})
         var data = google.visualization.arrayToDataTable([
           ['Time', 'Temperature'],
           ...data,

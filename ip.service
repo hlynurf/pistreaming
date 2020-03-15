@@ -1,12 +1,11 @@
 [Unit]
 Description=Sens email with IP info
-After=network.target
+After=multi-user.target
 
 [Service]
-Type=
+Type=idle
 User=pi
 ExecStart=/home/pi/code/pistreaming/run_ip_email.sh > /home/pi/ip.log 2>&1
-Restart=always
 
 [Install]
 WantedBy=multi-user.target

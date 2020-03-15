@@ -3,9 +3,9 @@ Description=Sens email with IP info
 After=network.target
 
 [Service]
-Type=simple
+Type=
 User=pi
-ExecStart=/home/pi/pistreaming/run_ip_email.sh > /home/pi/ip.log 2>&1
+ExecStart=/home/pi/code/pistreaming/run_ip_email.sh > /home/pi/ip.log 2>&1
 Restart=always
 
 [Install]
